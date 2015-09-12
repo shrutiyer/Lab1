@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(itemsAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 System.out.println(position);
                 System.out.println(id);
                 Toast.makeText(getApplicationContext(), ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
@@ -57,7 +57,10 @@ public class MainActivity extends AppCompatActivity {
                 alertDialogBuilder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        Toast.makeText(MainActivity.this, "You clicked edit button", Toast.LENGTH_LONG).show();
+                        toDoList.remove(position);
+                        // Refresh the adapter
+                        itemsAdapter.notifyDataSetChanged();
+                        //Toast.makeText(MainActivity.this, "Item has been deleted", Toast.LENGTH_LONG).show();
                     }
                 });
                 AlertDialog alertDialog = alertDialogBuilder.create();
