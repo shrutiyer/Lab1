@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder alertEdit = new AlertDialog.Builder(this);
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, toDoList);
         ListView listView = (ListView) findViewById(R.id.groceryList);
         listView.setAdapter(itemsAdapter);
@@ -44,13 +46,31 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 System.out.println(position);
                 System.out.println(id);
-                Toast.makeText(getApplicationContext(), ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+
                 alertDialogBuilder.setMessage("Do you want to edit or delete the item?");
 
                 alertDialogBuilder.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         Toast.makeText(MainActivity.this, "You clicked edit button", Toast.LENGTH_LONG).show();
+
+                        alertEdit.setMessage("Enter the item");
+                        final EditText editedItem = new EditText(MainActivity.this);
+
+                        editedItem.setInputType(InputType.TYPE_CLASS_TEXT);
+                        alertEdit.setView(editedItem);
+
+                        alertEdit.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                toDoList.set(position,editedItem.getText().toString());
+                                System.out.println(editedItem.getText().toString());
+                                itemsAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+                        alertEdit.setNegativeButton("Cancel", null);
+                        alertEdit.show();
                     }
                 });
 
@@ -60,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                         toDoList.remove(position);
                         // Refresh the adapter
                         itemsAdapter.notifyDataSetChanged();
-                        //Toast.makeText(MainActivity.this, "Item has been deleted", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Item has been deleted", Toast.LENGTH_LONG).show();
                     }
                 });
                 AlertDialog alertDialog = alertDialogBuilder.create();
