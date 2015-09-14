@@ -19,33 +19,32 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<String> toDoList = new ArrayList<>();
-    ArrayAdapter<String> itemsAdapter;
+    ArrayList<String> toDoList = new ArrayList<>();//List with all the items
+    ArrayAdapter<String> itemsAdapter;//Array Adapter for the list
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        View addListnr = findViewById(R.id.addbtn);
+        View addListnr = findViewById(R.id.addbtn);//Listener for the add button
         final EditText addedGrocery = (EditText) findViewById(R.id.groceryItem);
         addListnr.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//Adding the text to the list
                 toDoList.add(0,addedGrocery.getText().toString());
                 itemsAdapter.notifyDataSetChanged();
-                addedGrocery.setText("");
+                addedGrocery.setText("");//Clear the text field
             }
         });
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        final AlertDialog.Builder alertEdit = new AlertDialog.Builder(this);
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);//Alert Dialog with Edit and Delete options
+        final AlertDialog.Builder alertEdit = new AlertDialog.Builder(this);//Alert Dialog with Edit text field
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, toDoList);
         ListView listView = (ListView) findViewById(R.id.groceryList);
         listView.setAdapter(itemsAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                System.out.println(position);
-                System.out.println(id);
+                final String selectedItem = parent.getItemAtPosition(position).toString();
                 //Toast.makeText(getApplicationContext(), ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
 
                 alertDialogBuilder.setMessage("Do you want to edit or delete the item?");
@@ -53,19 +52,20 @@ public class MainActivity extends AppCompatActivity {
                 alertDialogBuilder.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        Toast.makeText(MainActivity.this, "You clicked edit button", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(MainActivity.this, "You clicked edit button", Toast.LENGTH_LONG).show();
 
                         alertEdit.setMessage("Enter the item");
                         final EditText editedItem = new EditText(MainActivity.this);
 
                         editedItem.setInputType(InputType.TYPE_CLASS_TEXT);
+                        editedItem.setText(selectedItem);
                         alertEdit.setView(editedItem);
 
                         alertEdit.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                toDoList.set(position,editedItem.getText().toString());
-                                System.out.println(editedItem.getText().toString());
+                                toDoList.set(position,editedItem.getText().toString());//onclick after the edited text is entered
                                 itemsAdapter.notifyDataSetChanged();
+                                Toast.makeText(MainActivity.this, "Item has been updated", Toast.LENGTH_LONG).show();
                             }
                         });
 
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                         toDoList.remove(position);
                         // Refresh the adapter
                         itemsAdapter.notifyDataSetChanged();
-                        Toast.makeText(MainActivity.this, "Item has been deleted", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Item has been deleted", Toast.LENGTH_LONG).show();//Shows that the item has been deleted
                     }
                 });
                 AlertDialog alertDialog = alertDialogBuilder.create();
