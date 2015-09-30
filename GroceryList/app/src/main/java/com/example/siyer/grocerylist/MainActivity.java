@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GroceryDb DbaseService = new GroceryDb(this);
         setContentView(R.layout.activity_main);
         View addListnr = findViewById(R.id.addbtn);//Listener for the add button
         final EditText addedGrocery = (EditText) findViewById(R.id.groceryItem);
